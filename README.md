@@ -34,7 +34,7 @@ O código seria formado por:
 
 O sistema aceita arquivos no formato Microsoft Access (.mdb) para importação em massa de estações.
 
-### Tabela Estacoes_Novas
+### Tabela Estacao
 
 A tabela deve conter as seguintes colunas:
 
@@ -52,18 +52,19 @@ A tabela deve conter as seguintes colunas:
 |--------|------|-----------|
 | Altitude | Decimal | Altitude em metros |
 | AreaDrenagem | Decimal | Área de drenagem |
-| Bacia | Texto | Nome da bacia |
-| Sub-Bacia | Texto | Nome da sub-bacia |
-| Rio | Texto | Nome do rio |
-| Estado | Texto | Nome/Sigla do estado |
-| Municipio | Texto | Nome do município |
-| Responsavel | Texto | Nome do responsável |
-| Escala | Texto | Possui escala (Sim/Não) |
-| Descarga Liquida | Texto | Possui descarga líquida (Sim/Não) |
-| Sedimentos | Texto | Possui medição de sedimentos (Sim/Não) |
-| QualidadeAgua | Texto | Possui medição de qualidade da água (Sim/Não) |
-| Pluviometro | Texto | Possui pluviômetro (Sim/Não) |
-| Telemetrica | Texto | Possui telemetria (Sim/Não) |
+| Bacia | Integer | Código da bacia |
+| Sub-Bacia | Integer | Código da sub-bacia |
+| Rio | Integer | Código do rio |
+| Estado | Integer | Código do estado |
+| Municipio | Integer | Código do município |
+| Responsavel | Integer | Código do responsável |
+| Escala | Integer | Possui escala 1/0 (Sim/Não) |
+| Descarga Liquida | Integer | Possui descarga líquida 1/0 (Sim/Não) |
+| Sedimentos | Integer | Possui medição de sedimentos 1/0 (Sim/Não) |
+| QualidadeAgua | Integer | Possui medição de qualidade da água 1/0 (Sim/Não) |
+| Pluviometro | Integer | Possui pluviômetro 1/0 (Sim/Não) |
+| Telemetrica | Integer | Possui telemetria 1/0 (Sim/Não) |
+| Operando | Integer | Está operando 1/0 (Sim/Não) |
 
 ## Validações
 
@@ -75,7 +76,8 @@ O sistema realiza as seguintes validações:
    - Formato decimal com ponto como separador
 
 2. Arquivo de importação:
-   - Presença da tabela 'Estacoes_Novas'
+   - Utilizar o NovasEstacoes.mdb como modelo de importação
+   - Presença da tabela 'Estacao'
    - Presença das colunas obrigatórias
    - Formato correto dos dados
 
