@@ -3,9 +3,9 @@ import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QHBoxLayout, QLabel, QLineEdit, QPushButton,
                            QFileDialog, QTabWidget, QTableWidget, QTableWidgetItem,
-                           QMessageBox, QProgressBar, QHeaderView, QComboBox)
+                           QMessageBox, QProgressBar, QHeaderView, QComboBox, QFrame)
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QIcon, QPainter, QColor, QBrush
 from Codificacao_Estacao_Core import EstacaoManager
 
 def resource_path(relative_path):
@@ -22,30 +22,40 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Codificação de Estações")
         self.setMinimumSize(1200, 800)
-        
+        # Definir ícone personalizado
+        icon_path = resource_path("assets/pluviometer.ico")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
         # Definir o estilo global incluindo o fundo cinza
         self.setStyleSheet("""
             QMainWindow, QWidget {
-                background-color: #e6e6e6;
+                background-color: #919191;
             }
             QLabel {
-                color: #003366;
+                color: #333333;
                 background-color: transparent;
             }
             QPushButton {
-                background-color: #003366;
+                background-color: #005a9e;
                 color: white;
                 padding: 8px 15px;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #004080;
+                background-color: #0078d4;
+            }
+            QComboBox, QComboBox QAbstractItemView, QComboBox::item {
+                color: #222 !important;
+                background: white;
+            }
+            QFrame#Card {
+                background: white;
+                border-radius: 14px;
+                border: 1px solid #333232;
             }
         """)
-        
         # Inicializa o gerenciador de estações
         self.estacao_manager = EstacaoManager()
-        
         # Configurar a interface
         self.setup_ui()
         
@@ -57,8 +67,9 @@ class MainWindow(QMainWindow):
         # Layout principal
         layout = QVBoxLayout(central_widget)
         
-        # Cabeçalho com logos e título
-        header_widget = QWidget()
+        # Cabeçalho com sombra
+        header_widget = QFrame()
+        header_widget.setObjectName("Card")
         header_layout = QHBoxLayout(header_widget)
         header_layout.setContentsMargins(20, 20, 20, 20)
         header_layout.setSpacing(20)
@@ -67,9 +78,7 @@ class MainWindow(QMainWindow):
         rhn_label = QLabel()
         rhn_path = resource_path("assets/rhn_logo.png")
         rhn_pixmap = QPixmap(rhn_path)
-        if rhn_pixmap.isNull():
-            print(f"Erro: Não foi possível carregar a imagem rhn_logo.png do caminho: {rhn_path}")
-        else:
+        if not rhn_pixmap.isNull():
             rhn_pixmap = rhn_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             rhn_label.setPixmap(rhn_pixmap)
         rhn_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -80,7 +89,7 @@ class MainWindow(QMainWindow):
         title_layout = QVBoxLayout(title_widget)
         title_layout.setContentsMargins(0, 0, 0, 0)
         title_label = QLabel("Codificação de Estações Pluviométricas")
-        title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #003366; margin: 20px; background-color: transparent;")
+        title_label.setStyleSheet("font-size: 28px; font-weight: bold; color: #003366; margin: 20px; background-color: transparent;")
         title_label.setAlignment(Qt.AlignCenter)
         title_layout.addWidget(title_label)
         header_layout.addWidget(title_widget, 4)
@@ -89,21 +98,20 @@ class MainWindow(QMainWindow):
         ana_label = QLabel()
         ana_path = resource_path("assets/ana_logo.png")
         ana_pixmap = QPixmap(ana_path)
-        if ana_pixmap.isNull():
-            print(f"Erro: Não foi possível carregar a imagem ana_logo.png do caminho: {ana_path}")
-        else:
+        if not ana_pixmap.isNull():
             ana_pixmap = ana_pixmap.scaled(120, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             ana_label.setPixmap(ana_pixmap)
         ana_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         header_layout.addWidget(ana_label, 1)
         
-        # Ajustar o alinhamento e espaçamento do cabeçalho
-        header_widget.setFixedHeight(160)  # Altura fixa para o cabeçalho
+        header_widget.setFixedHeight(170)
         layout.addWidget(header_widget)
         
-        # Área principal
-        main_widget = QWidget()
-        main_layout = QVBoxLayout(main_widget)
+        # Área principal em cartão
+        main_card = QFrame()
+        main_card.setObjectName("Card")
+        main_layout = QVBoxLayout(main_card)
+        main_layout.setSpacing(18)
         
         # Seleção de arquivo
         file_widget = QWidget()
@@ -113,18 +121,8 @@ class MainWindow(QMainWindow):
         file_layout.addWidget(self.file_label)
         
         btn_arquivo = QPushButton("Selecionar Arquivo")
+        btn_arquivo.setIcon(QIcon.fromTheme("document-open"))
         btn_arquivo.clicked.connect(self.selecionar_arquivo)
-        btn_arquivo.setStyleSheet("""
-            QPushButton {
-                background-color: #003366;
-                color: white;
-                padding: 8px 15px;
-                border-radius: 4px;
-            }
-            QPushButton:hover {
-                background-color: #004080;
-            }
-        """)
         file_layout.addWidget(btn_arquivo)
         
         main_layout.addWidget(file_widget)
@@ -142,57 +140,49 @@ class MainWindow(QMainWindow):
         
         main_layout.addWidget(format_widget)
         
-        # Tabela de resultados
+        # Tabela de resultados com zebra striping
         self.tabela = QTableWidget()
         self.setup_tabela()
+        self.tabela.setAlternatingRowColors(True)
+        self.tabela.setStyleSheet(self.tabela.styleSheet() + "\nQTableWidget { alternate-background-color: #f5faff; }")
         main_layout.addWidget(self.tabela)
         
         # Barra de progresso
         self.progress = QProgressBar()
         self.progress.setStyleSheet("""
             QProgressBar {
-                border: 2px solid #003366;
+                border: 2px solid #005a9e;
                 border-radius: 5px;
                 text-align: center;
             }
             QProgressBar::chunk {
-                background-color: #003366;
+                background-color: #0078d4;
             }
         """)
         main_layout.addWidget(self.progress)
         
-        # Botão processar
+        # Botão processar com ícone
         btn_processar = QPushButton("Processar Arquivo")
+        btn_processar.setIcon(QIcon.fromTheme("media-playback-start"))
         btn_processar.clicked.connect(self.processar_arquivo)
-        btn_processar.setStyleSheet("""
-            QPushButton {
-                background-color: #003366;
-                color: white;
-                padding: 8px 15px;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #004080;
-            }
-        """)
         main_layout.addWidget(btn_processar)
         
-        layout.addWidget(main_widget)
+        layout.addWidget(main_card)
         
-        # Rodapé com informações
-        footer_widget = QWidget()
+        # Rodapé em cartão
+        footer_widget = QFrame()
+        footer_widget.setObjectName("Card")
         footer_layout = QVBoxLayout(footer_widget)
         
         # Informações
         author_label = QLabel("Desenvolvido por: Matheus da Silva Castro")
-        author_label.setStyleSheet("font-weight: bold; color: #003366;")
+        author_label.setStyleSheet("font-weight: bold; color: #333333;")
         author_label.setAlignment(Qt.AlignCenter)
         footer_layout.addWidget(author_label)
         
         ref_label = QLabel("Referência da codificação:")
         ref_label.setAlignment(Qt.AlignCenter)
-        ref_label.setStyleSheet("color: #003366;")
+        ref_label.setStyleSheet("color: #333333;")
         footer_layout.addWidget(ref_label)
         
         link_label = QLabel('<a href="https://ecivilufes.wordpress.com/wp-content/uploads/2011/04/inventc3a1rio-estac3a7c3b5es-pluviomc3a9tricas.pdf">Manual de Codificação</a>')
@@ -224,12 +214,13 @@ class MainWindow(QMainWindow):
         # Estilo da tabela
         self.tabela.setStyleSheet("""
             QTableWidget {
-                gridline-color: #003366;
-                border: 1px solid #003366;
+                gridline-color: #dcdcdc;
+                border: 1px solid #dcdcdc;
                 background-color: white;
+                color: #333333;
             }
             QHeaderView::section {
-                background-color: #003366;
+                background-color: #005a9e;
                 color: white;
                 padding: 4px;
                 border: 1px solid #004080;
@@ -301,7 +292,7 @@ class MainWindow(QMainWindow):
         self.tabela.setItem(linha, 0, QTableWidgetItem(registro.get('Nome', '')))
         self.tabela.setItem(linha, 1, QTableWidgetItem(str(registro.get('Latitude', ''))))
         self.tabela.setItem(linha, 2, QTableWidgetItem(str(registro.get('Longitude', ''))))
-        self.tabela.setItem(linha, 3, QTableWidgetItem(str(registro.get('CodigoGerado', ''))))
+        self.tabela.setItem(linha, 3, QTableWidgetItem(str(registro.get('Codigo', ''))))
         
         # Dados adicionais
         self.tabela.setItem(linha, 4, QTableWidgetItem(str(registro.get('Altitude', ''))))
