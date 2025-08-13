@@ -45,6 +45,7 @@ A tabela deve conter as seguintes colunas:
 | Nome | Texto | Nome da estação |
 | Latitude | Decimal | Latitude em graus decimais (entre -90 e 90) |
 | Longitude | Decimal | Longitude em graus decimais (entre -180 e 180) |
+| ResponsavelCodigo | Integer | Código do Responsável |
 
 #### Colunas Opcionais
 
@@ -57,14 +58,26 @@ A tabela deve conter as seguintes colunas:
 | Rio | Integer | Código do rio |
 | Estado | Integer | Código do estado |
 | Municipio | Integer | Código do município |
-| Responsavel | Integer | Código do responsável |
 | Escala | Integer | Possui escala 1/0 (Sim/Não) |
+| EscalaInicial | Date | Data de ínicio da medição |
+| EscalaFim | Date | Data do fim da medição |
 | Descarga Liquida | Integer | Possui descarga líquida 1/0 (Sim/Não) |
+| DescargaLiquidaInicial | Date | Data de ínicio da medição |
+| DescargaLiquidaFim | Date | Data do fim da medição |
 | Sedimentos | Integer | Possui medição de sedimentos 1/0 (Sim/Não) |
+| SedimentosInicial | Date | Data de ínicio da medição |
+| SedimentosFim | Date | Data do fim da medição |
 | QualidadeAgua | Integer | Possui medição de qualidade da água 1/0 (Sim/Não) |
+| QualidadeAguaInicial | Date | Data de ínicio da medição |
+| QualidadeAguaFim | Date | Data do fim da medição |
 | Pluviometro | Integer | Possui pluviômetro 1/0 (Sim/Não) |
+| PluviometroInicial | Date | Data de ínicio da medição |
+| PluviometroFim | Date | Data do fim da medição |
 | Telemetrica | Integer | Possui telemetria 1/0 (Sim/Não) |
+| TelemetricaInicial | Date | Data de ínicio da medição |
+| TelemetricaFim | Date | Data do fim da medição |
 | Operando | Integer | Está operando 1/0 (Sim/Não) |
+| Descricao | Texto | Descrição da Estação |
 
 ## Validações
 
@@ -135,4 +148,5 @@ Desenvolvido por: Matheus da Silva Castro
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes. 
+
 
