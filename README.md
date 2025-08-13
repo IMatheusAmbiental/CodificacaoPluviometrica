@@ -76,9 +76,10 @@ O sistema realiza as seguintes validações:
    - Formato decimal com ponto como separador
 
 2. Arquivo de importação:
-   - Utilizar o NovasEstacoes.mdb como modelo de importação
-   - Presença da tabela 'Estacao'
-   - Presença das colunas obrigatórias
+   - Estrutura da Tabela 'Estacoes_Novas' no Excel 'Template' localizado na pasta 'mdb'
+   - Utilizar o Template.mdb como modelo de importação do Excel
+   - Presença da tabela 'Estacoes_Novas'
+   - Presença das colunas obrigatórias (Nome, Latitude, Longitude, ResonsavelCodigo)
    - Formato correto dos dados
 
 3. Geração de códigos:
@@ -102,9 +103,11 @@ Os arquivos exportados incluirão todas as informações das estações processa
 
 ## Instalação
 
-1. Baixe o arquivo executável mais recente da seção [Releases](../../releases)
-2. Execute o arquivo `Codificacao_Estacao.exe`
+1. Baixe os arquivos mais recente da seção [Releases](../../releases)
+2. Execute o arquivo `build.bat`
 3. Não é necessária instalação adicional
+4. Após rodar o `build.bat` o executável se encontra na pasta `dist`
+5. Preferência enviar o atalho para área de trabalho ou menu iniciar para fácil acesso.
 
 ## Desenvolvimento
 
@@ -132,3 +135,4 @@ Desenvolvido por: Matheus da Silva Castro
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes. 
+
